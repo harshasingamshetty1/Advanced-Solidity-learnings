@@ -13,7 +13,7 @@ contract CryptoDevs is ERC721Enumerable, Ownable {
     string _baseTokenURI;
 
     //  _price is the price of one Crypto Dev NFT
-    uint256 public _price = 0.01 ether;
+    uint256 public _price;
 
     // _paused is used to pause the contract in case of an emergency
     bool public _paused;
@@ -44,11 +44,14 @@ contract CryptoDevs is ERC721Enumerable, Ownable {
      * Constructor for Crypto Devs takes in the baseURI to set _baseTokenURI for the collection.
      * It also initializes an instance of whitelist interface.
      */
-    constructor(string memory baseURI, address whitelistContract)
-        ERC721("Crypto Devs", "CD")
-    {
+    constructor(
+        string memory baseURI,
+        address whitelistContract,
+        uint256 _nftBasePrice
+    ) ERC721("Crypto Devs", "CD") {
         _baseTokenURI = baseURI;
         whitelist = IWhitelist(whitelistContract);
+        _price = _nftBasePrice;
     }
 
     /**
@@ -109,6 +112,10 @@ contract CryptoDevs is ERC721Enumerable, Ownable {
      */
     function setPaused(bool val) public onlyOwner {
         _paused = val;
+    }
+
+    function setPrice(uint256 _newPrice) external onlyOwner {
+        _price = _newPrice;
     }
 
     /**

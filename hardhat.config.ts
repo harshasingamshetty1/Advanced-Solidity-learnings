@@ -10,7 +10,7 @@ const INFURA_HTTP_URL =
   process.env.INFURA_HTTP_URL || "Provide RPC endpoint for testnet";
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.9",
+  solidity: "0.8.17",
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {
