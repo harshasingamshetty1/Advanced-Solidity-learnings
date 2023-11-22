@@ -1,0 +1,22 @@
+Udemy course: Advanced Solidity: Understanding and Optimizing Gas Costs
+
+==============Section: Overview of gas cost==============
+
+function selector is the first 4 bytes of the keccak256 hash of the function signature.
+
+in a txn, the msg.data value takes up 4 gas for a zero value i.e 0x00
+and takes up 16 gas for each byte of data. i.e 0x01 in the msg.data takes up 16 gas.
+source=> yellow paper
+
+Deployed a simple contract with only single function.
+
+function doNothing() external payable{} with optimization enabled to 1000 runs.
+
+Now, a txn to the doNothing() took exactly 21138 gas.
+Lets dive in, how we got that amount exactly.
+
+First thing, As we know basic any txn on EVM, takes 21,000 gas.
+
+Second is, as we have called the doNothing() function. which means the function selector is passed in the msg.data 
+as we know that function selector is 4 bytes long and also from the yellow paper understood that, each byte takes up 16 gas.
+Therefore, 64 gas. adds up to current total of 21,064
