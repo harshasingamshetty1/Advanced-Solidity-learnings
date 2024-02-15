@@ -52,6 +52,50 @@ All this is done by compiler, irrespective of what u do, and for every byte of m
 and here as we are pushing into 3rd slot, therefore we are reserving 3 slots
 and hence 9 gas is used up!
 
+The above doNothing() function has been made payable, so it has less cost.
+
+This is bcoz, when we do not have payable keyword, then when a txn is initiated, there are checks happening to see is msg.value is 0 or not, and reverts if msg.value != 0 , and hence it takes more gas for this check.
+
+but when func is payable, msg.value can be anything, including 0. therefore, no need of any checks and hence less gas.
+
+1. till solidity 0.8, there was no built in arithmatic check, so there used to be overflow and underflow possible.
+   i.e
+   uint8 a = 255
+   a += 1
+
+now, a would become 0. due to overflow
+
+but after 0.8 Solidity, the txn gets reverted if something like that happens, coz it has got some built in checks at the bytecode level.
+
+and hence, we can save some gas (~ 7gas for each increment), if can have unchecked blocks in loops.
+this must be done, only in cases, when u think that, there is no way of the value getting overflowed.
+
+2. THe 21,000 gas must be payed for any txn whatsoever. this is bcoz, the EVM nodes have got some overhead to be checked.
+   They are
+   a. The txn is well formed, without any trailing zeroes.
+   b. The nonce is valid.
+   c. THe txn signature is valid.
+   d. The sender acc bal has sufficient gas for up front payments.
+
+So these are major factors which contribute to the 21,000 gas that is always present in any EVM txn.
+Therefore, all the additional work, you do in your txn will be added to these base of 21k gas.
+
+3. Base Fee is Dynamic based on the network congestion.
+   If the Block is at almost at its limit, then the base fee increase by almost ~12%
+   and when the block is relatively empty, it decreases like wise,
+
+### Solidity Optimizer
+
+Basically the optimizer has a parameter called num of runs.
+This is a trade off parameter between the
+
+1. deployment cost (length of bytecode generated) vs
+2. The Cost of user interaction with the contract.
+
+Ideally, the runs should be very high like 1mil if you think that, the contract would be heavily used by users, i.e the num of txns gonnna be crazy high, like Uniswap V3 it almost has 5M txns currently, they know that it would have so many txns happening and hence they have set the optimizer runs to 1million.
+
+So, if the runs is low like 200 or so, then the deployment cost is low ( due to short bytcode.) and the user interaction cost is high.
+
 ## Misc
 
 Change State Variables to Immutable Where Possible
