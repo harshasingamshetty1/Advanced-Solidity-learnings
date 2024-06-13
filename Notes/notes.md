@@ -100,7 +100,7 @@ So, if the runs is low like 200 or so, then the deployment cost is low ( due to 
 
 1. Setting storage var from zero to non-zero => ~20,000 gas (This is bcoz we need to index the value)
 2. Setting storage var from non-zero to non-zero => ~5,000 gas (This is coz, we have already indexed but just have to change the value)[but its only ~100gas if we are just rewriting the same value]
-3. Setting storage from non-zero to zero => 0 gas (This is coz we are removing the index)[Check the refunds section for more info]
+3. Setting storage from non-zero to zero => ~ almost 0 gas (This is coz we are removing the index)[Check the refunds section for more info]
 
 Cold storage read access ~2100 gas, i.e when storage var is loaded for 1st time in the txn.
 warm storage read is just 100 gas which is almost negligible.
@@ -160,3 +160,30 @@ MAX (26200-4800 or 26200\*(0.8)) [understand that, we multuplied with 0.8 bcoz, 
 In this scenario, MAX (21400, 20960)
 
 Therefore, total gas => 21400 (case 1 is applied)
+
+# Gas cost for ERC 20 transfers
+
+3 main things that happen in a transfer are
+
+1. Balance of sender is decreased
+2. Balance of reciever is increased
+3. An event is emitted (logs added to blockchain and hence must pay gas)
+
+lets concentrate on 1 and 2. (all possible cases)
+
+1. sender balance: nonzero to zero<br>
+   Receiver bal: zero to nonzero<br>
+   Total would become => 21k + 22k(receiver) + 5k -4.8k (refund) <br>
+   =>46,686 (~invloves event emmission as well)
+
+2. sender balance: nonzero to nonzero<br>
+   Receiver bal: zero to nonzero<br>
+   Total would become => 21k + 22k(receiver) + 5k <br>
+   =>51,474 (~invloves event emmission as well)
+
+Similarly if you calculate, its least expensive for the below case
+
+3. sender balance: nonzero to zero<br>
+   Receiver bal: nonzero to nonzero<br>
+   Total would become => 21k + 5k(receiver) + 5k -4.8k (refund) <br>
+   =>29,586 (~invloves event emmission as well)
