@@ -99,10 +99,64 @@ So, if the runs is low like 200 or so, then the deployment cost is low ( due to 
 ## Storage Overiew Section
 
 1. Setting storage var from zero to non-zero => ~20,000 gas (This is bcoz we need to index the value)
-2. Setting storage var from non-zero to non-zero => ~5,000 gas (This is coz, we have already indexed but just have to change the value)
-3. Setting storage from non-zero to zero => 0 gas (This is coz we are removing the index)
+2. Setting storage var from non-zero to non-zero => ~5,000 gas (This is coz, we have already indexed but just have to change the value)[but its only ~100gas if we are just rewriting the same value]
+3. Setting storage from non-zero to zero => 0 gas (This is coz we are removing the index)[Check the refunds section for more info]
 
 Cold storage read access ~2100 gas, i.e when storage var is loaded for 1st time in the txn.
 warm storage read is just 100 gas which is almost negligible.
-
+<br>
+Important to add the cold storage, when you are accessing a var and modifying it to non zero, and hence essentially the above 20k would become 22.1k gas
+<br><br>
 **Key point: Each storage slot is 32bytes, so you cannot just use smaller size variables like u16 etc, to save gas. Rather you should arrange all the vars in your contract so that you take up as minimal slots as possible**
+
+# Arrays
+
+### case 1:
+
+Lets say we are creating an array = [1] into storage, what's the gas cost ?<br>
+21k => txn cost<br>
+22,100 => to store the length <br>
+22,100 => changing a value from zero to non zero (~20k) + 2.1k for cold storage of the 0th index
+so total around 66k gas.<br>
+
+now, if we are changing the array = [2,3]<br>
+same as above 66k and 1 more element(22.1k) so, total around 87k<br>
+
+Now, lets say new array = [2, 4]<br>
+
+"**catch**": here, the 0th index element is not modified.
+so,
+21k => txn cost<br>
+5k => increment the length this is not 22k bcoz we are changing a value from non zero to non zero<br>
+22.1k => to store the new element<br>
+2100 => cold access of 0th index<br>
+100 => we are rewriting the same element so only 100 gas, it would be 5k if we have changed the value
+<br>
+so total around 51k gas
+
+So its better to push into an array, if you are not going to change the values. it would save you around 2200 gas
+
+## Refunds for setting var from non zero to zero [VM London]
+
+1. You either get 4800 gas as refund or
+2. you get 20% of total gas of your tx
+
+You'll be paying whicher is the maximum of the above 2 gas values.
+
+Ex: 1
+lets say uint a = 1, is now changed to 0
+in this case
+21k => txn cost
+5k => changing from non zero to non-zero (Though we are changing to 0, it still is counted, as we will be getting a refund)
+
+200 => function handling costs
+
+Total till here => 26200 gas
+
+But, we will be pay
+
+MAX (26200-4800 or 26200\*(0.8)) [understand that, we multuplied with 0.8 bcoz, case 2 is 20% refund]
+
+In this scenario, MAX (21400, 20960)
+
+Therefore, total gas => 21400 (case 1 is applied)
