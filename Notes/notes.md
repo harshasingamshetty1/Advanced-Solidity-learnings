@@ -187,3 +187,47 @@ Similarly if you calculate, its least expensive for the below case
    Receiver bal: nonzero to nonzero<br>
    Total would become => 21k + 5k(receiver) + 5k -4.8k (refund) <br>
    =>29,586 (~invloves event emmission as well)
+
+## Storage Cost for files
+
+Understand that,
+1kb => 2^10 bytes
+wkt, for each storage slot to change it from 0 -> non-zero, we need 22,100 gas.
+and also wkt, each slot is 32 bytes.
+
+So, therefore for 1kb => 32\*22100
+=> nearly 700k gas
+=> almost 100USD as per avg ETH price($3k)
+
+Therefore, on average for just a 1kb file, it would need $100 gas price, which is pretty huuge.
+Thereore, we must always choose to keep the **untamperable summaries of data like hash values**.
+Instead of the raw files itself
+
+## Variable packing
+
+Common misconception: Its not always better pack the variables.
+like uint128, uint128 into one storage slot.
+
+Its bcoz, when we pack 2 vars into a single storage slot, then the evm must also do some calculations regarding the offset, bcoz when it loads the slot, it loads both the values, but to understand, which belongs to which var.
+VM stores the offset value (its just some logic)
+
+## MEMORY VS CALLDATA
+
+Which is better and when ?
+
+```Solidity
+   function arr(bytes memory param) external pure returns(bytes memory ){
+         return param;
+      }
+
+   function arr(bytes calldata param) external pure returns(bytes memory ){
+         return param;
+      }
+```
+
+Basically, the meaning of using memory is that, we want to copy the input(calldata) into our local memory.
+
+And calldata, mean that you just want to use the input without copying it.
+
+So now, Calldata is cheaper when you are not going to modify the input data.
+But incase, you need to mutate the input data, then we must go with memory to save gas. Simple!
