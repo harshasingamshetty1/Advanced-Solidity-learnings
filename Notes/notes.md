@@ -231,3 +231,33 @@ And calldata, mean that you just want to use the input without copying it.
 
 So now, Calldata is cheaper when you are not going to modify the input data.
 But incase, you need to mutate the input data, then we must go with memory to save gas. Simple!
+
+## No Garbage collector
+
+In solidity, we donot have any mechanism to clear out the memory allocated unlike many other languages.
+
+So, if something like this happens:
+
+```Solidity
+   contract Storage {
+
+      function testMemory() external pure {
+         for(uint i=0; i<10; i++){
+               allocateMemory();
+         }
+      }
+      function allocateMemory() internal pure {
+         uint256[1000] memory arr;
+      }
+   }
+```
+
+We might assume that, the memory is cleared after each iteration in the loop.
+Because the function scope of allocateMemory() is over.
+
+But, its not the case in Solidity.
+You are charged for 10\*1000 slots of memory allocated.
+
+**Takeaway:**
+You must be careful, while allocating memory over and over again.
+As its not cleared, it adds up and might hit the quadratic increment stage of memory and will cost huge amount of gas!
