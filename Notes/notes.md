@@ -261,3 +261,16 @@ You are charged for 10\*1000 slots of memory allocated.
 **Takeaway:**
 You must be careful, while allocating memory over and over again.
 As its not cleared, it adds up and might hit the quadratic increment stage of memory and will cost huge amount of gas!
+
+## Function names
+
+1. Function names are stored in ascending order of their 4byte keccak256 hash values.
+
+Why is this important =>
+
+When a funcntion signature is invoked in a txn, the evm must search the entire contract for the function with the matching signature, it starts off with the 1st signature and then keeps on searching till it finds the matching signature.
+
+For each search it takes 22 gas. and hence, if there are a lot of functions in your contract, then if possible try to make sure that the function your users might use the most have the lowest 4byte hash value.
+
+2.Also when bench marking a function while optimizing its gas cost, never change its name.
+Because it might affect the total gas being used
