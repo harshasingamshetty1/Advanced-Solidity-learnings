@@ -274,3 +274,13 @@ For each search it takes 22 gas. and hence, if there are a lot of functions in y
 
 2.Also when bench marking a function while optimizing its gas cost, never change its name.
 Because it might affect the total gas being used
+
+## Less than vs Less than or equal to
+
+solidity does not have a less than or equal to opcode.
+and hence, use strict inequalities to save gas.
+
+### Bit shifting
+
+Prefer bit shifting when multiplying or dividing by 2.
+ITS bcoz, \* opcode takes 5 gas, but shifting opcode just 3 gas
