@@ -41,3 +41,21 @@ Before each txn, the code of contract being called is loaded, program counter is
 ![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/7.png?raw=true)
 
 If gas limit is hit while execn, all the state changes are reverted, only the senders nonce is incremented, and their ETH balance is cut, for wasting time of EVM and so that no one can abuse the system
+
+## Gas cost vs Gas Price
+
+Gas price is dependent on the network conditions i.e when the netowrk is congested, you will have to pay more eth per gas.
+
+But the gas cost remains constant always.
+
+We have a gas limit per block, which inderctly refers to max gas per txn as well, and hence EVM is not exactly a turing complete, but a quasi turing complete due to this limitaion
+
+![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/8.png?raw=true)
+
+## Opcodes
+
+EVM has all the basic math opcodes, which all the assembly level languages have.
+
+But here are some opcode, which are specific to blockchain and ethereum environment.
+
+![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/9.png?raw=true)
