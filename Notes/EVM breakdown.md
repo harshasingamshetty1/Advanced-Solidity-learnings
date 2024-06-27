@@ -59,3 +59,19 @@ EVM has all the basic math opcodes, which all the assembly level languages have.
 But here are some opcode, which are specific to blockchain and ethereum environment.
 
 ![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/9.png?raw=true)
+
+EVM has just the access to the current world state. Nothing other than that. No external APIs nothing!
+
+This is because that the main objective of this sand boxed virtual machines that is an EVM is that, given an initial state, and a txn data, the next state generated to be exactly same for ever node, irrespective of what OS, hardware the node is using etc.
+
+And so, we cannot have external APIs, which could hinder this feature and each node could have different world states of Ethereum and hence can cause many different forks of the blockchain
+
+And hence the need of Oracle providers like Chainlink.
+
+### Contract call within a txn
+
+A Smart contract can call another contract, and each call to another contract create a brand new EVM instance of the EVM. Each call passes the sandbox world state to the next EVM.
+
+And ofcourse, if the gas runs out all these world state changes are discarded.
+
+![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/10.png?raw=true)
