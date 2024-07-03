@@ -1,6 +1,7 @@
 # Layer 2
 
-Simply put, layer 2 just computes txns and batch them together to send it to the Ethereum(L1).
+[https://l2beat.com/scaling/summary]
+<br>Simply put, layer 2 just computes txns and batch them together to send it to the Ethereum(L1).
 ![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/11.png?raw=true)
 
 ## L2 Architecture
@@ -55,3 +56,29 @@ The EVM doesn't directly process blobs, but thanks to KZG cryptographic commitme
 Using blobs allows these solutions to significantly decrease the amount of data they must permanently store, resulting in lower gas fees.
 
 ![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/14.png?raw=true)
+
+## Validiums
+
+The main difference of validuims are,
+
+1. They do not post the Txn data on to the L1 unlike rollups
+2. But they do post the proofs in this case zk proofs to the L1s
+
+They store the txn data in DAs like Eigen, Avail or Celestia.
+Becoz, storing the txn data onto L1 can be expensive.
+
+Drawback: The major drawback is that, we cannot regenerate the enitre state of a Validium just from the base L1, which is possible in rollups as we post the txn data as well.
+
+Exmples of validiums include: ImmutableX, Myria, Astar zkEVM,
+
+![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/15.png?raw=true)
+
+## L2 txn lifecycle
+
+1. A txn on L2 is first included in a Block
+2. A block can have multiple txns
+3. A block is involved in a batch.
+4. Now the batch of L2 txns are aggregated by the aggregator and then sent to the Rollup contract of L1 and `squenceBatches` function is executed.
+5. Similarly, the L2 txns batch verification is posted on to L1 and the `verifyBatchesTrustedAggregator` method is executed on L1
+
+So with this mechanism, Rollups post both the txn data as well as verification data on to the L1 layer.
