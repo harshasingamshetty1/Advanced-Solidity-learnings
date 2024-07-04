@@ -82,3 +82,47 @@ Exmples of validiums include: ImmutableX, Myria, Astar zkEVM,
 5. Similarly, the L2 txns batch verification is posted on to L1 and the `verifyBatchesTrustedAggregator` method is executed on L1
 
 So with this mechanism, Rollups post both the txn data as well as verification data on to the L1 layer.
+
+## Eigen Layer
+
+Before Eigen, if a protocol wants to have high decen and security as ETH. Its not possible if the service you are trying to provide is not a smart contract, then you cant utilise the ETh's security.
+
+The usual solution would be to give higher rewards to attract the ETH validators to come and secure your network
+
+Problems:
+
+1. Its not feasible
+2. Bcoz, Stakers wouldnt come to you even if you give high rewards bcoz your token cannot be as stable as ETH.
+
+So the solution,
+Simply put, Eigen layer is reutilising the already staked eth of validators in the Ethereum ecosystem, to be able to use for other services as well, so Eth level of decentralisation and security is available for other services as well.
+
+So there are
+
+1. Stakers
+2. Operators
+3. Developers
+
+![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/16.png?raw=true)
+![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/17.png?raw=true)
+![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/18.png?raw=true)
+
+### The First AVS (Actively Validated Service): Eigen DA
+
+Eigen DA is secured by the ETH validators, who can opt in to secure the Eigen layer, without having to remove any current stakings etc.
+
+With this, the validators receive additional rewards apart from those they already receive from ETH staking as a validator.
+
+In return it helps Eigen Layer to provide super security and decnzn for any AVS that opt to use Eigen Layer
+
+![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/19.png?raw=true)
+
+### Eigen Layer Risks
+
+There are obvious risks invloved.
+
+1. The staker is trusting the operator they are delegating to. If the operator misbehaves, the staker could miss out on potential fee payments or even lose their entire stake.
+
+2. The operator is relying on the AVS developer to accurately code the client software and the onchain slashing condition. If there are bugs in the AVS softwares, at best, the operator might miss potential fee payments. At worst, the operator could be slashed for all their stakes.
+
+But luckily there is a Veto committee, which can do the reverse slashing, in cases where no one has misbehaved but the tokens are slashed due to some misunderstanding or bugs etc.
