@@ -34,3 +34,48 @@ So, the Liquidity providers deposit their funds into the contracts and hence, th
 So essentially, we can say that, in traditional finance only whales used to have the opprtunity to do arbitrage trades, but with Flash loans in DEFI the playing field is levelled for everyone, and anyone can be rich for a single transaction.
 
 Now lets discuss all types of known attacks:
+
+## Reentrancy Attack
+
+This is very simple, whenever you are making an external call make sure you are updating the effects before interaction with external calls. Or else the fallbacks of attack contracts can drain the vulnerable contracts.
+
+Prevention:
+
+1. Ensure all state changes happen before calling external contracts
+2. Use function modifiers that prevent re-entrancy
+
+## Hiding Malicious Code with External Contract
+
+In Solidity any address can be casted into specific contract, the casting does not verify whether the address being casted is actually the contrac we want to cast into or not, so attackers can use this to hide malicious code.
+
+Essentially, when looked at the code, the user might think that he is interacting to a specific contract, but actually he is interacting with a contract that can have any code.
+
+## Relying on ExtCode size
+
+In below contract protected() can be called with a contract as well.
+
+Its because, the extcodesize(address) is zero for a contract while its still being constructed.
+
+And hence, I can call the protected method from a contract within the constructor and it would pass.
+
+```sol
+contract Target {
+    function isContract(address account) public view returns (bool) {
+        // This method relies on extcodesize, which returns 0 for contracts in
+        // construction, since the code is only stored at the end of the
+        // constructor execution.
+        uint256 size;
+        assembly {
+            size := extcodesize(account)
+        }
+        return size > 0;
+    }
+
+    bool public pwned = false;
+
+    function protected() external {
+        require(!isContract(msg.sender), "no contract allowed");
+        pwned = true;
+    }
+}
+```
