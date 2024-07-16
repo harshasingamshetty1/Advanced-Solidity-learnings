@@ -35,6 +35,18 @@ So essentially, we can say that, in traditional finance only whales used to have
 
 Now lets discuss all types of known attacks:
 
+## Oracle Manipulation Attacks
+
+![alt text](https://github.com/harshasingamshetty1/advanced-solidity-learnings/blob/main/resources/23.png?raw=true)
+
+Imagine a scenario, where an application is using a DEX/AMM reserves as the source of truth for the prices.
+
+But this is a very very bad approach, because "Flash Loans" can easily manipulate the price of tokens for a transaction and can buy stuff for unreal prices.
+
+Hence we must never use a DEX as an oracle.
+A famous example of Oracle manipulation using flash loans is the 2021 attack of Cream Finance.<br>
+https://rekt.news/cream-rekt-2/
+
 ## Reentrancy Attack
 
 This is very simple, whenever you are making an external call make sure you are updating the effects before interaction with external calls. Or else the fallbacks of attack contracts can drain the vulnerable contracts.
@@ -79,3 +91,16 @@ contract Target {
     }
 }
 ```
+
+## Cross-chain Replay Attacks
+
+For EVM-compatible rollups, it is also worth noting that when transactions are sent from L1 to L2, the address of the sender of the transaction on L2 will be set to the address of the sender of the transaction on L1.
+However, the address of the sender of a transaction on L2 will be different if the transaction was triggered by a smart contract on L1.
+
+It is possible to have smart contracts on both the L1 and L2 with the same address but different bytecode (different implementations) due to the behavior of the CREATE opcode.
+
+If the sender of the L2 transaction is an L1 smart contract with the same address as a contract on the L2, the transaction can be replayed on the L2 but using the L2 contract implementation. To mitigate this, some contracts on rollups are aliased to avoid them being called maliciously.
+
+Prevention:
+
+To prevent cross-chain replay attacks, use a chain-specific signature scheme such as EIP-155, which includes the chain ID in the signed message. The signature should also be verified using the chain ID. This will prevent transactions signed on one chain from being replayed on another chain.
