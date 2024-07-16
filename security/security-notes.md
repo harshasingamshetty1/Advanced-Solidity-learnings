@@ -104,3 +104,20 @@ If the sender of the L2 transaction is an L1 smart contract with the same addres
 Prevention:
 
 To prevent cross-chain replay attacks, use a chain-specific signature scheme such as EIP-155, which includes the chain ID in the signed message. The signature should also be verified using the chain ID. This will prevent transactions signed on one chain from being replayed on another chain.
+
+## msg.value attack (mishandling ETH)
+
+Case study:
+https://samczsun.com/two-rights-might-make-a-wrong/
+
+The major point was, there was a batch transaction which trasnfers eth, but the msg.value of single txn could be used for every other txn in the batch.
+
+In the case of sushi swap,it was a huuuuge issue, it could have led to almost $350 Mil in loss,
+
+Key Takeaways:
+
+First, using msg.value in complex systems is hard. It’s a global variable that you can’t change and persists across delegate calls.
+
+If you use msg.value to check that payment was received, you absolutely cannot place that logic in a loop. As a codebase grows in complexity, it’s easy to lose track of where that happens and accidentally loop something in the wrong place.
+
+Although wrapping and unwrapping of ETH is annoying and introduces extra steps, the unified interface between WETH and other ERC20 tokens might be well worth the cost if it means avoiding something like this.
